@@ -1,0 +1,164 @@
+<html>
+	<head>
+		<title>RPG Maker MV Tools</title>
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery.csv.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/md5.min.js"></script>
+		<script src="js/functions.js"></script>
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="css/main.css">
+	</head>
+	<body>
+		<nav class="navbar navbar-default">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" data-toggle="collapse" data-target="#navcollapse" aria-expanded="false" class="navbar-toggle collapsed">
+					<span class="sr-only">开关</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					</button>
+					<a href="#" class="navbar-brand">MV Tools</a>
+					<p class="navbar-text">A jQuery Based RPG Maker MV Map Tools</p>
+				</div>
+				<div class="collapse navbar-collapse navbar-right" id="navcollapse">
+					<ul class="nav navbar-nav" role="tablist">
+						<li role="presentation" class="active">
+							<a href="#mapcmp" aria-controls="mapcmp" role="tab" data-toggle="tab">Map Compare</a>
+						</li>
+						<li role="presentation">
+							<a href="#csvcheck" aria-controls="csvcheck" role="tab" data-toggle="tab">CSV Check</a>
+						</li>
+						<li role="presentation">
+							<a href="#mapcheck" aria-controls="mapcheck" role="tab" data-toggle="tab">Map Check</a>
+						</li>
+						<li role="presentation">
+							<a href="#mapmodify" aria-controls="mapmodify" role="tab" data-toggle="tab">Map Modify</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<div class="tab-content">
+			<div class="tab-pane active" role="tabpanel" id="mapcmp">
+				<h2 class="ptitle">Compare</h2>
+				<div class="source panel panel-default panel-body">
+					<div>
+						<input type="file" id="lfile" onchange="loadMap(this, this.files[0]);"><b>Original Language</b>
+						<div id="lresult" class="result hidden"></div>
+						<textarea id="ltext" ondragover="dragover(event);" ondrop="drop(event);" style="background-color: rgba(255,255,0,0.15);"></textarea>
+					</div>
+					<div>
+						<input type="file" id="rfile" onchange="loadMap(this, this.files[0]);"><b>Target Language</b>
+						<div id="rresult" class="result hidden"></div>
+						<textarea id="rtext" ondragover="dragover(event);" ondrop="drop(event);" style="background-color: rgba(177,255,0,0.15);"></textarea>
+					</div>
+				</div>
+				<div class="controls panel panel-default" style="text-align: center;">
+					<div class="panel-body">
+						<span><button class="btn btn-warning" onclick="next();">Next</button></span>
+						<span><input type="text" id="lcurrent" class="input form-control inputbox" value="0"></span>
+						<span><button class="btn btn-info" onclick="left();">Left</button></span>
+						<span><input type="text" id="rcurrent" class="input form-control inputbox" value="0"></span>
+						<span><button class="btn btn-info" onclick="right();">Right</button></span>
+						<span><button class="btn btn-warning" onclick="align();">Align</button></span>
+						<span><button class="btn btn-warning" onclick="search();">Search</button></span>
+						<span><button class="btn btn-warning" onclick="fanyi();">Translate</button></span>
+						<span><button class="btn btn-danger" onclick="aclear();">Clear</button></span>
+						<span><button class="btn btn-primary" onclick="apply();">Apply</button></span>
+						<span><button class="btn btn-success" onclick="save();">Save</button></span>
+						<span id="current" class="hidden">
+							<div id="csvcurrent" class="hidden">0</div>
+							<a id="csvsave" download="TextContent.csv"></a>
+						</span>
+					</div>
+				</div>
+				<h2 class="ptitle">Result</h2>
+				<div class="result panel panel-default panel-body">
+					<div>
+						<input type="file" id="csvfile" onchange="loadCSV(this)">
+						<a href="#" onclick="loadCSV(document.getElementById('csvfile'));" class="btn btn-info">Reload</a>
+						<div id="csvresult" class="result hidden"></div>
+						<textarea id="csvtext" ondragover="dragover(event);" ondrop="drop(event);" style="background-color: rgba(102,204,255,0.15);"></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane" role="tabpanel" id="csvcheck">
+				<div class="controls panel panel-default" style="text-align: center;">
+					<div class="panel-body">
+						<span id="filename" style="padding-right: 10px; font-weight: bold;"></span>
+						<span>
+							<label class="btn btn-default">
+								<input id="csvraw" type="file" style="display: none;" onchange="loadCSV(this);showfn(this, document.getElementById('filename'));">
+								Load
+								<div id="csvjson" class="result hidden"></div>
+							</label>
+						</span>
+						<a href="javascript:void(0);" onclick="loadCSV(document.getElementById('csvraw'));" class="btn btn-danger">Reload</a>
+						<span><input id="currentcsv" type="text" class="input form-control inputbox" value="0"></span>
+						<span><button class="btn btn-info" onclick="checkcsv();">Check</button></span>
+						<span><button class="btn btn-warning" onclick="proccess();">Proccess</button></span>
+						<span><button class="btn btn-danger" onclick="autoformat();">Format</button></span>
+						<span><button class="btn btn-primary" onclick="modify();">Modify</button></span>
+						<span><button class="btn btn-success" onclick="savecsv();">Save</button></span>
+						<span id="proccess" style="padding-left: 10px; font-weight: bold;"></span>
+					</div>
+				</div>
+				<div class="controls panel panel-default">
+					<div class="panel-body">
+						<input type="text" id="display" class="input form-control" style="background-color: rgba(255,255,0,0.15);">
+						<textarea id="ncontent" style="background-color: rgba(102,204,255,0.15); width: 100%; height: 400px;" placeholder="Input English text here."></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane" role="tabpanel" id="mapcheck">
+				<div class="controls panel panel-default" style="text-align: center;">
+					<div class="panel-body">
+						<span id="mapfn" style="padding-right: 10px; font-weight: bold;"></span>
+						<span>
+							<label class="btn btn-default">
+								<input type="file" id="mapraw" style="display: none;" onchange="loadAllMap(document.getElementById('mapfn'), this.files[0]);">
+								Load
+								<div id="mapjson" class="result hidden"></div>
+							</label>
+							<a href="javascript:void(0);" onclick="loadAllMap(document.getElementById('mapfn'), document.getElementById('mapraw').files[0]);" class="btn btn-danger">Reload</a>
+						</span>
+					</div>
+				</div>
+				<div class="controls panel panel-default">
+					<div class="panel-body">
+						<textarea id="mapresult" cols="30" rows="10" style="background-color: rgba(102,204,255,0.15); width: 100%; height: 450px;"></textarea>
+					</div>
+				</div>
+			</div>
+			<div id="mapmodify" class="tab-pane" role="tabpanel">
+				<div class="controls panel panel-default" style="text-align: center;">
+					<div class="panel-body">
+						<span id="mmap" style="padding-right: 10px; font-weight: bold;"></span>
+						<span>
+							<label class="btn btn-default">
+								<input type="file" id="mmapcsv" style="display: none;" onchange="loadCSV(this);">
+								Load CSV
+								<div id="mmapcsvjson" class="result" style="display: none;"></div>
+							</label>
+							<a href="javascript:void(0);" onclick="loadCSV(document.getElementById('mmapcsv'));" class="btn btn-danger">Reload</a>
+							<label class="btn btn-default">
+								<input type="file" id="mmapfile" style="display: none;" onchange="mapModifyLoad(document.getElementById('mmap'), this.files[0]);">
+								Load
+								<div id="mmapjson" class="result hidden"></div>
+							</label>
+							<a href="javascript:void(0);" onclick="mapModifyLoad(document.getElementById('mmap'), document.getElementById('mmapfile').files[0]);" class="btn btn-danger">Reload</a>
+						</span>
+					</div>
+				</div>
+				<div class="controls panel panel-default">
+					<div class="panel-body">
+						<textarea id="mmapresult" cols="30" rows="10" style="background-color: rgba(102,204,255,0.15); width: 100%; height: 450px;"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

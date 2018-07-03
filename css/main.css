@@ -1,0 +1,39 @@
+body>div {
+	margin-top: -10px;
+}
+.source, .result {
+	margin-right: 50px;
+	margin-left: 50px;
+}
+.source {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.source>div {
+	width: 50%;
+	flex-grow: 1;
+}
+.controls, .ptitle {
+	margin: 5px 50px;
+}
+.source textarea {
+	width: 100%;
+	height: 150px;
+}
+.result textarea {
+	width: 100%;
+	height: 120px;
+}
+.controls>span {
+	padding: 0 5px;
+}
+.form-control, input[type=file] {
+	display: inline-block;
+}
+.inputbox {
+	width: 4em;
+}
+.panel {
+	margin-bottom: 0;
+}
